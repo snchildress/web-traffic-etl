@@ -9,4 +9,8 @@ build:
 
 .PHONY: run
 run:
-	make build && docker run -it ${IMAGE_TAG}
+	make build && docker run ${IMAGE_TAG}
+
+.PHONY: test
+test:
+	make build && docker run ${IMAGE_TAG} sh -c "python -m unittest"
