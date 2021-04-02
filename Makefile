@@ -8,7 +8,7 @@ build:
 	docker build --tag ${IMAGE_TAG} . \
 		&& make clean
 
-.PHONE: clean
+.PHONY: clean
 clean:
 	docker container prune -f \
 		&& docker image prune -f
