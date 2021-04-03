@@ -34,7 +34,8 @@ class TestExtractionService(unittest.TestCase):
             self.response_content = [
                     b'drop,length,path,user_agent,user_id',
                     b'1,7,/,Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:54.0) Gecko/20100101 Firefox/54.0\t,378',  # noqa: E501
-                    b'0,11,/,"Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_2 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13F69 Safari/601.1",220'  # noqa: E501
+                    b'0,11,/,"Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_2 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13F69 Safari/601.1",220',  # noqa: E501
+                    b''
                 ]
 
         def iter_lines(self):

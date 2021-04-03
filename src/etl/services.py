@@ -63,4 +63,4 @@ class ExtractionService:
         except (AttributeError, TypeError):
             raise BadResponse()
 
-        return list(csv.reader(lines))
+        return list(filter(None, csv.reader(lines)))
