@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch
 
-from src.exceptions import BadRequest
+from src.exceptions import InvalidParams, InvalidFilename
 from src.services import ExtractionService
 
 
@@ -68,7 +68,17 @@ class TestExtractionService(unittest.TestCase):
         )
         mock_get.return_value = self.MockResponse(ok=False)
 
-        with self.assertRaises(BadRequest):
+        with self.assertRaises(InvalidFilename):
             ExtractionService.fetch_csv_rows(test_file_name)
 
         mock_get.assert_called_once_with(expected_request_url)
+
+    @patch('requests.get')
+    def test_fetch_csv_rows_invalid_param(self, mock_get):
+        """
+        Tests that CSV rows cannot be fetched using invalid
+        inputs for filename
+        """
+        for test_file_name in ['', None, 1, True, [''], {'': ''}]:
+            with self.assertRaises(InvalidParams):
+                ExtractionService.fetch_csv_rows(test_file_name)

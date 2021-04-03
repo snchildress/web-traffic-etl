@@ -4,7 +4,7 @@ import string
 
 import requests
 
-from .exceptions import BadRequest
+from .exceptions import InvalidParams, InvalidFilename
 
 
 class ExtractionService:
@@ -32,9 +32,13 @@ class ExtractionService:
             list[list[str]]: a list of CSV row lists, starting
                              with a list of column headers
         """
+        if not isinstance(name, str) or name == '':
+            raise InvalidParams
+
         url = f'{self.WEB_TRAFFIC_DATA_ROOT_URL}/{name}.csv'
         response = requests.get(url)
         if not response.ok:
-            raise BadRequest
+            raise InvalidFilename
+
         lines = [line.decode('utf-8') for line in response.iter_lines()]
         return list(csv.reader(lines))
