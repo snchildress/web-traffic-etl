@@ -1,0 +1,4 @@
+import os
+
+
+WEB_TRAFFIC_DATA_ROOT_URL = os.environ['WEB_TRAFFIC_DATA_ROOT_URL']

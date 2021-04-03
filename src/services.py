@@ -1,15 +1,13 @@
-import os
 import csv
 import string
 
 import requests
 
 from .exceptions import InvalidParams, InvalidFilename
+from .config import WEB_TRAFFIC_DATA_ROOT_URL
 
 
 class ExtractionService:
-    WEB_TRAFFIC_DATA_ROOT_URL = os.environ['WEB_TRAFFIC_DATA_ROOT_URL']
-
     @classmethod
     def generate_file_names(self) -> list[str]:
         """
@@ -35,7 +33,7 @@ class ExtractionService:
         if not isinstance(name, str) or name == '':
             raise InvalidParams
 
-        url = f'{self.WEB_TRAFFIC_DATA_ROOT_URL}/{name}.csv'
+        url = f'{WEB_TRAFFIC_DATA_ROOT_URL}/{name}.csv'
         response = requests.get(url)
         if not response.ok:
             raise InvalidFilename
