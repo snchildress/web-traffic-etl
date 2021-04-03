@@ -30,7 +30,7 @@ class ExtractionService:
 
         returns:
             list[list[str]]: a list of CSV row lists, each list
-                             containing the following headers [
+                             containing the following headers: [
                                  'drop',
                                  'length',
                                  'path',
@@ -43,8 +43,8 @@ class ExtractionService:
             raise InvalidParams()
 
         try:
-            url = f'{self.root_url}/{name}.csv'
-            response = requests.get(url)
+            url: str = f'{self.root_url}/{name}.csv'
+            response: requests.Response = requests.get(url)
         except Exception:
             raise BadRequest()
 
@@ -55,7 +55,8 @@ class ExtractionService:
             response_content = response.iter_lines()
             if not response_content:
                 raise BadResponse()
-            lines = [line.decode('utf-8') for line in response_content]
+            lines: list[str] = [line.decode('utf-8')
+                                for line in response_content]
             if lines[0] != 'drop,length,path,user_agent,user_id':
                 raise BadResponse()
             lines = lines[1:]  # remove the expected headers row
