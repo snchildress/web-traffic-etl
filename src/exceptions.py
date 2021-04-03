@@ -17,6 +17,14 @@ class InvalidFilename(Exception):
 class BadRequest(Exception):
     """
     raised when an unknown exception occurs
-    that results from a bad HTTP request or
+    that results from a bad HTTP request
+    """
+    pass
+
+
+class BadResponse(Exception):
+    """
+    raised when an unexpected HTTP response
+    body is received
     """
     pass

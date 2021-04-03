@@ -3,7 +3,7 @@ import string
 
 import requests
 
-from .exceptions import InvalidParams, InvalidFilename, BadRequest
+from .exceptions import InvalidParams, InvalidFilename, BadRequest, BadResponse
 from .config import WEB_TRAFFIC_DATA_ROOT_URL
 
 
@@ -29,8 +29,15 @@ class ExtractionService:
                    without the file extension
 
         returns:
-            list[list[str]]: a list of CSV row lists, starting
-                             with a list of column headers
+            list[list[str]]: a list of CSV row lists, each list
+                             containing the following headers [
+                                 'drop',
+                                 'length',
+                                 'path',
+                                 'user_agent',
+                                 'user_id'
+                             ]
+
         """
         if not isinstance(name, str) or name == '':
             raise InvalidParams()
@@ -44,5 +51,15 @@ class ExtractionService:
         if not response.ok:
             raise InvalidFilename()
 
-        lines = [line.decode('utf-8') for line in response.iter_lines()]
+        try:
+            response_content = response.iter_lines()
+            if not response_content:
+                raise BadResponse()
+            lines = [line.decode('utf-8') for line in response_content]
+            if lines[0] != 'drop,length,path,user_agent,user_id':
+                raise BadResponse()
+            lines = lines[1:]  # remove the expected headers row
+        except (AttributeError, TypeError):
+            raise BadResponse()
+
         return list(csv.reader(lines))

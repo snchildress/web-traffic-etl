@@ -1,7 +1,12 @@
 import unittest
 from unittest.mock import patch
 
-from src.exceptions import InvalidParams, InvalidFilename, BadRequest
+from src.exceptions import (
+    InvalidParams,
+    InvalidFilename,
+    BadRequest,
+    BadResponse
+)
 from src.services import ExtractionService
 
 
@@ -24,16 +29,23 @@ class TestExtractionService(unittest.TestCase):
         self.assertEqual(actual_file_names, expected_file_names)
 
     class MockResponse:
-        def __init__(self, ok=True):
+        def __init__(self, ok=True, condition='success'):
             self.ok = ok
-
-        def iter_lines(self):
-            if self.ok:
-                return [
+            self.condition = condition
+            self.response_content = [
                     b'drop,length,path,user_agent,user_id',
                     b'1,7,/,Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:54.0) Gecko/20100101 Firefox/54.0\t,378',  # noqa: E501
                     b'0,11,/,"Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_2 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13F69 Safari/601.1",220'  # noqa: E501
                 ]
+
+        def iter_lines(self):
+            if self.ok:
+                if self.condition == 'success':
+                    return self.response_content
+                elif self.condition == 'missing_headers':
+                    return self.response_content[1:]
+                else:
+                    return self.condition
 
     @patch('requests.get')
     def test_fetch_csv_rows(self, mock_get):
@@ -45,7 +57,6 @@ class TestExtractionService(unittest.TestCase):
             name=test_file_name
         )
         expected_csv_rows = [
-            ['drop', 'length', 'path', 'user_agent', 'user_id'],
             ['1', '7', '/', 'Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:54.0) Gecko/20100101 Firefox/54.0\t', '378'],  # noqa: E501
             ['0', '11', '/', 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_2 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13F69 Safari/601.1', '220']  # noqa: E501
         ]
@@ -54,7 +65,7 @@ class TestExtractionService(unittest.TestCase):
         actual_rows = ExtractionService.fetch_csv_rows(test_file_name)
 
         mock_get.assert_called_once_with(expected_request_url)
-        self.assertEqual(len(actual_rows), 3)
+        self.assertEqual(len(actual_rows), 2)
         self.assertEqual(actual_rows, expected_csv_rows)
 
     @patch('requests.get')
@@ -101,3 +112,20 @@ class TestExtractionService(unittest.TestCase):
             ExtractionService.fetch_csv_rows(test_file_name)
 
         mock_get.assert_called_once_with(expected_request_url)
+
+    @patch('requests.get')
+    def test_fetch_csv_rows_with_bad_response_content(self, mock_get):
+        """
+        Tests that an unexpected HTTP response body is handled
+        """
+        test_file_name = 'a'
+        expected_request_url = self.test_request_url.format(
+            name=test_file_name
+        )
+        for condition in ['missing_headers', [], None, 'test', ['test'], 1]:
+            mock_get.return_value = self.MockResponse(condition=condition)
+
+            with self.assertRaises(BadResponse):
+                ExtractionService.fetch_csv_rows(test_file_name)
+
+            mock_get.assert_called_with(expected_request_url)
