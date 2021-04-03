@@ -1,13 +1,13 @@
 import unittest
 from unittest.mock import patch, call
 
-from src.exceptions import InvalidParams
-from src.handlers import ExtractionHandler, TransformationHandler
+from src.etl.exceptions import InvalidParams
+from src.etl.handlers import ExtractionHandler, TransformationHandler
 
 
 class TestExtractionHandler(unittest.TestCase):
-    @patch('src.services.ExtractionService.generate_file_names')
-    @patch('src.services.ExtractionService.fetch_csv_rows')
+    @patch('src.etl.services.ExtractionService.generate_file_names')
+    @patch('src.etl.services.ExtractionService.fetch_csv_rows')
     def test_extract(self, fetch_csv_rows_mock, generate_file_names_mock):
         """
         Tests that the extraction handler is successful

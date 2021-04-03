@@ -1,13 +1,13 @@
 import unittest
 from unittest.mock import patch
 
-from src.exceptions import (
+from src.etl.exceptions import (
     InvalidParams,
     InvalidFilename,
     BadRequest,
     BadResponse
 )
-from src.services import ExtractionService
+from src.etl.services import ExtractionService
 
 
 class TestExtractionService(unittest.TestCase):
