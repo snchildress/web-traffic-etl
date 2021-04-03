@@ -4,6 +4,8 @@ import string
 
 import requests
 
+from .exceptions import BadRequest
+
 
 class ExtractionService:
     WEB_TRAFFIC_DATA_ROOT_URL = os.environ['WEB_TRAFFIC_DATA_ROOT_URL']
@@ -32,5 +34,7 @@ class ExtractionService:
         """
         url = f'{self.WEB_TRAFFIC_DATA_ROOT_URL}/{name}.csv'
         response = requests.get(url)
+        if not response.ok:
+            raise BadRequest
         lines = [line.decode('utf-8') for line in response.iter_lines()]
         return list(csv.reader(lines))
