@@ -47,7 +47,7 @@ class TestExtractionService(unittest.TestCase):
                     return self.condition
 
     @patch('requests.get')
-    def test_fetch_csv_rows(self, mock_get):
+    def test_fetch_csv_rows(self, requests_get_mock):
         """
         Tests that the given CSV file returns successfully
         """
@@ -59,15 +59,15 @@ class TestExtractionService(unittest.TestCase):
             ['1', '7', '/', 'Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:54.0) Gecko/20100101 Firefox/54.0\t', '378'],  # noqa: E501
             ['0', '11', '/', 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_2 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13F69 Safari/601.1', '220']  # noqa: E501
         ]
-        mock_get.return_value = self.MockResponse()
+        requests_get_mock.return_value = self.MockResponse()
 
         actual_csv_rows = ExtractionService.fetch_csv_rows(test_file_name)
 
-        mock_get.assert_called_once_with(expected_request_url)
+        requests_get_mock.assert_called_once_with(expected_request_url)
         self.assertEqual(actual_csv_rows, expected_csv_rows)
 
     @patch('requests.get')
-    def test_fetch_csv_rows_invalid_name(self, mock_get):
+    def test_fetch_csv_rows_invalid_name(self, requests_get_mock):
         """
         Tests that the given CSV file name is invalid
         """
@@ -75,15 +75,15 @@ class TestExtractionService(unittest.TestCase):
         expected_request_url = self.test_request_url.format(
             name=test_file_name
         )
-        mock_get.return_value = self.MockResponse(ok=False)
+        requests_get_mock.return_value = self.MockResponse(ok=False)
 
         with self.assertRaises(InvalidFilename):
             ExtractionService.fetch_csv_rows(test_file_name)
 
-        mock_get.assert_called_once_with(expected_request_url)
+        requests_get_mock.assert_called_once_with(expected_request_url)
 
     @patch('requests.get')
-    def test_fetch_csv_rows_invalid_param(self, mock_get):
+    def test_fetch_csv_rows_invalid_param(self, requests_get_mock):
         """
         Tests that CSV rows cannot be fetched using invalid
         inputs for filename
@@ -92,10 +92,10 @@ class TestExtractionService(unittest.TestCase):
             with self.assertRaises(InvalidParams):
                 ExtractionService.fetch_csv_rows(test_file_name)
 
-            mock_get.assert_not_called()
+            requests_get_mock.assert_not_called()
 
     @patch('requests.get')
-    def test_fetch_csv_rows_with_bad_request(self, mock_get):
+    def test_fetch_csv_rows_with_bad_request(self, requests_get_mock):
         """
         Tests that a generic error while fetching the CSV file
         is handled
@@ -104,15 +104,15 @@ class TestExtractionService(unittest.TestCase):
         expected_request_url = self.test_request_url.format(
             name=test_file_name
         )
-        mock_get.side_effect = Exception()
+        requests_get_mock.side_effect = Exception()
 
         with self.assertRaises(BadRequest):
             ExtractionService.fetch_csv_rows(test_file_name)
 
-        mock_get.assert_called_once_with(expected_request_url)
+        requests_get_mock.assert_called_once_with(expected_request_url)
 
     @patch('requests.get')
-    def test_fetch_csv_rows_with_bad_response_content(self, mock_get):
+    def test_fetch_csv_rows_with_bad_response_content(self, requests_get_mock):
         """
         Tests that an unexpected HTTP response body is handled
         """
@@ -121,9 +121,10 @@ class TestExtractionService(unittest.TestCase):
             name=test_file_name
         )
         for condition in ['missing_headers', [], None, 'test', ['test'], 1]:
-            mock_get.return_value = self.MockResponse(condition=condition)
+            requests_get_mock.return_value = self.MockResponse(
+                condition=condition)
 
             with self.assertRaises(BadResponse):
                 ExtractionService.fetch_csv_rows(test_file_name)
 
-            mock_get.assert_called_with(expected_request_url)
+            requests_get_mock.assert_called_with(expected_request_url)
