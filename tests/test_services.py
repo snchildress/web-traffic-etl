@@ -82,3 +82,5 @@ class TestExtractionService(unittest.TestCase):
         for test_file_name in ['', None, 1, True, [''], {'': ''}]:
             with self.assertRaises(InvalidParams):
                 ExtractionService.fetch_csv_rows(test_file_name)
+
+            mock_get.assert_not_called()
