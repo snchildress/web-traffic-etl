@@ -19,8 +19,10 @@ class ExtractionHandler:
                              ]
         """
         file_names = ExtractionService.generate_file_names()
-        return [ExtractionService.fetch_csv_rows(file_name) for file_name
-                in file_names]
+        flattened_rows = []
+        for file_name in file_names:
+            flattened_rows += ExtractionService.fetch_csv_rows(file_name)
+        return flattened_rows
 
 
 class TransformationHandler:

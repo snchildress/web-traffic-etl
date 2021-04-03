@@ -19,9 +19,10 @@ class TestExtractionHandler(unittest.TestCase):
         ]
         generate_file_names_mock.return_value = mocked_file_names
         fetch_csv_rows_mock.return_value = mocked_csv_rows
-        expected_csv_rows = [
-            mocked_csv_rows for _ in range(len(mocked_file_names))
-        ]  # expect a concatenated list of the same mocked rows for each file
+        # expect a flat list of the mocked data repeated for each mocked file
+        expected_csv_rows = []
+        for _ in range(len(mocked_file_names)):
+            expected_csv_rows += mocked_csv_rows
         expected_fetch_csv_rows_calls = [
             call(file_name) for file_name in mocked_file_names
         ]

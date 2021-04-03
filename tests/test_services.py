@@ -15,8 +15,8 @@ class TestExtractionService(unittest.TestCase):
 
     def test_generate_file_names(self):
         """
-        Tests that the generated file names list contains
-        26 items and is equal to the letters of the Latin alphabet
+        Tests that the generated file names list is
+        a list of the letters of the Latin alphabet
         """
         expected_file_names = \
             ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i',
@@ -25,7 +25,6 @@ class TestExtractionService(unittest.TestCase):
 
         actual_file_names = ExtractionService.generate_file_names()
 
-        self.assertEqual(len(actual_file_names), 26)
         self.assertEqual(actual_file_names, expected_file_names)
 
     class MockResponse:
@@ -62,11 +61,10 @@ class TestExtractionService(unittest.TestCase):
         ]
         mock_get.return_value = self.MockResponse()
 
-        actual_rows = ExtractionService.fetch_csv_rows(test_file_name)
+        actual_csv_rows = ExtractionService.fetch_csv_rows(test_file_name)
 
         mock_get.assert_called_once_with(expected_request_url)
-        self.assertEqual(len(actual_rows), 2)
-        self.assertEqual(actual_rows, expected_csv_rows)
+        self.assertEqual(actual_csv_rows, expected_csv_rows)
 
     @patch('requests.get')
     def test_fetch_csv_rows_invalid_name(self, mock_get):
