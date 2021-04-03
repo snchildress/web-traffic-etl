@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch
 
-from src.exceptions import InvalidParams, InvalidFilename
+from src.exceptions import InvalidParams, InvalidFilename, BadRequest
 from src.services import ExtractionService
 
 
@@ -84,3 +84,20 @@ class TestExtractionService(unittest.TestCase):
                 ExtractionService.fetch_csv_rows(test_file_name)
 
             mock_get.assert_not_called()
+
+    @patch('requests.get')
+    def test_fetch_csv_rows_with_bad_request(self, mock_get):
+        """
+        Tests that a generic error while fetching the CSV file
+        is handled
+        """
+        test_file_name = 'a'
+        expected_request_url = self.test_request_url.format(
+            name=test_file_name
+        )
+        mock_get.side_effect = Exception()
+
+        with self.assertRaises(BadRequest):
+            ExtractionService.fetch_csv_rows(test_file_name)
+
+        mock_get.assert_called_once_with(expected_request_url)

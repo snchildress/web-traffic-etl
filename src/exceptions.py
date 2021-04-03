@@ -12,3 +12,11 @@ class InvalidFilename(Exception):
     for using an invalid filename
     """
     pass
+
+
+class BadRequest(Exception):
+    """
+    raised when an unknown exception occurs
+    that results from a bad HTTP request or
+    """
+    pass

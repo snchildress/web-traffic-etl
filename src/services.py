@@ -3,11 +3,13 @@ import string
 
 import requests
 
-from .exceptions import InvalidParams, InvalidFilename
+from .exceptions import InvalidParams, InvalidFilename, BadRequest
 from .config import WEB_TRAFFIC_DATA_ROOT_URL
 
 
 class ExtractionService:
+    root_url = WEB_TRAFFIC_DATA_ROOT_URL
+
     @classmethod
     def generate_file_names(self) -> list[str]:
         """
@@ -31,12 +33,16 @@ class ExtractionService:
                              with a list of column headers
         """
         if not isinstance(name, str) or name == '':
-            raise InvalidParams
+            raise InvalidParams()
 
-        url = f'{WEB_TRAFFIC_DATA_ROOT_URL}/{name}.csv'
-        response = requests.get(url)
+        try:
+            url = f'{self.root_url}/{name}.csv'
+            response = requests.get(url)
+        except Exception:
+            raise BadRequest()
+
         if not response.ok:
-            raise InvalidFilename
+            raise InvalidFilename()
 
         lines = [line.decode('utf-8') for line in response.iter_lines()]
         return list(csv.reader(lines))
