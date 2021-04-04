@@ -11,7 +11,7 @@ class ExtractionService:
     root_url = WEB_TRAFFIC_DATA_ROOT_URL
 
     @classmethod
-    def generate_file_names(self) -> list[str]:
+    def generate_file_names(cls) -> list[str]:
         """
         returns an exhaustive list of the web traffic data file names
 
@@ -21,7 +21,7 @@ class ExtractionService:
         return list(string.ascii_lowercase)
 
     @classmethod
-    def fetch_csv_rows(self, name: str) -> list[list[str]]:
+    def fetch_csv_rows(cls, name: str) -> list[list[str]]:
         """
         returns the contents of a given CSV file name
 
@@ -43,7 +43,7 @@ class ExtractionService:
             raise InvalidParams()
 
         try:
-            url: str = f'{self.root_url}/{name}.csv'
+            url: str = f'{cls.root_url}/{name}.csv'
             response: requests.Response = requests.get(url)
         except Exception:
             raise BadRequest()
