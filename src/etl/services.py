@@ -1,5 +1,6 @@
 import csv
 import string
+from typing import Iterator
 
 import requests
 
@@ -8,7 +9,7 @@ from .config import WEB_TRAFFIC_DATA_ROOT_URL
 
 
 class ExtractionService:
-    root_url = WEB_TRAFFIC_DATA_ROOT_URL
+    root_url: str = WEB_TRAFFIC_DATA_ROOT_URL
 
     @classmethod
     def generate_file_names(cls) -> list[str]:
@@ -52,7 +53,7 @@ class ExtractionService:
             raise InvalidFilename()
 
         try:
-            response_content = response.iter_lines()
+            response_content: Iterator[bytes] = response.iter_lines()
             if not response_content:
                 raise BadResponse()
             lines: list[str] = [line.decode('utf-8')

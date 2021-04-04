@@ -18,8 +18,8 @@ class ExtractionHandler:
                                  'user_id'
                              ]
         """
-        file_names = ExtractionService.generate_file_names()
-        flattened_rows = []
+        file_names: list[str] = ExtractionService.generate_file_names()
+        flattened_rows: list[list[str]] = []
         for file_name in file_names:
             flattened_rows += ExtractionService.fetch_csv_rows(file_name)
         return flattened_rows
@@ -32,7 +32,7 @@ class TransformationHandler:
         """
         placeholder
         """
-        parsed_rows = [cls.Row.create(row) for row in rows]
+        parsed_rows: list[cls.Row] = [cls.Row.create(row) for row in rows]
         return cls.sort_rows_by_user_id(parsed_rows)
 
     class Row:
@@ -41,9 +41,9 @@ class TransformationHandler:
         length: int
 
         def __init__(self, user_id, path, length):
-            self.user_id = user_id
-            self.path = path
-            self.length = length
+            self.user_id: int = user_id
+            self.path: str = path
+            self.length: int = length
 
         @ classmethod
         def create(cls, row: list[str]):
@@ -58,9 +58,9 @@ class TransformationHandler:
                 Row: the provided CSV row as a Row instance
             """
             try:
-                user_id = int(row[4])
-                path = row[2]
-                length = int(row[1])
+                user_id: int = int(row[4])
+                path: str = row[2]
+                length: int = int(row[1])
             except (TypeError, ValueError, IndexError, KeyError):
                 raise InvalidParams()
             return cls(user_id=user_id, path=path, length=length)
@@ -78,12 +78,12 @@ class TransformationHandler:
         returns:
             {int: {str: int}} a of user IDs to paths/durations
         """
-        sorted_rows = {}
+        sorted_rows: dict[int, dict[str, int]] = {}
 
         for row in rows:
-            user_id = row.user_id
-            path = row.path
-            length = row.length
+            user_id: int = row.user_id
+            path: str = row.path
+            length: int = row.length
 
             if user_id not in sorted_rows:
                 sorted_rows[user_id] = {
