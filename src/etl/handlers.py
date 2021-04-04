@@ -33,7 +33,8 @@ class TransformationHandler:
         placeholder
         """
         parsed_rows: list[cls.Row] = [cls.Row.create(row) for row in rows]
-        return cls.sort_rows_by_user_id(parsed_rows)
+        sorted_rows, _ = cls.sort_rows_by_user_id(parsed_rows)
+        return sorted_rows
 
     class Row:
         user_id: int
@@ -67,7 +68,7 @@ class TransformationHandler:
 
     @ classmethod
     def sort_rows_by_user_id(cls, rows: list[Row]) -> \
-            dict[int, dict[str, int]]:
+            tuple[dict[int, dict[str, int]], list[str]]:
         """
         sorts the given list of Row instances into a dict
         of user IDs to a dict of the pages and cumulative
@@ -77,8 +78,10 @@ class TransformationHandler:
 
         returns:
             {int: {str: int}} a of user IDs to paths/durations
+
         """
         sorted_rows: dict[int, dict[str, int]] = {}
+        paths: set[str] = set()
 
         for row in rows:
             user_id: int = row.user_id
@@ -96,4 +99,7 @@ class TransformationHandler:
                 else:
                     user[path] = length
 
-        return sorted_rows
+            paths.add(path)
+        sorted_paths: list[str] = sorted(paths)
+
+        return sorted_rows, sorted_paths

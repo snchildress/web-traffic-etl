@@ -44,6 +44,7 @@ class TestTransformationHandler(unittest.TestCase):
             path='/',
             length=7
         )
+
         actual_row = TransformationHandler.Row.create([
             '1',
             '7',
@@ -81,6 +82,8 @@ class TestTransformationHandler(unittest.TestCase):
                 '/help': 12
             }
         }
+        expected_sorted_paths = ['/', '/help', '/test']
+
         test_rows = [
             TransformationHandler.Row(user_id=1, path='/', length=2),
             TransformationHandler.Row(user_id=1, path='/', length=5),
@@ -91,12 +94,11 @@ class TestTransformationHandler(unittest.TestCase):
             TransformationHandler.Row(user_id=3, path='/help', length=8),
             TransformationHandler.Row(user_id=1, path='/', length=3),
         ]
-
-        actual_sorted_rows = TransformationHandler.sort_rows_by_user_id(
-            test_rows
-        )
+        actual_sorted_rows, actual_sorted_paths = \
+            TransformationHandler.sort_rows_by_user_id(test_rows)
 
         self.assertEqual(actual_sorted_rows, expected_sorted_rows)
+        self.assertEqual(actual_sorted_paths, expected_sorted_paths)
 
     def test_transform(self):
         """
@@ -115,6 +117,7 @@ class TestTransformationHandler(unittest.TestCase):
                 '/help': 12
             }
         }
+
         test_rows = [
             ['1', '2', '/', '', '1'],
             ['0', '5', '/', '', '1'],
@@ -125,7 +128,6 @@ class TestTransformationHandler(unittest.TestCase):
             ['1', '8', '/help', '', '3'],
             ['0', '3', '/', '', '1'],
         ]
-
         actual_sorted_rows = TransformationHandler.transform(test_rows)
 
         self.assertEqual(actual_sorted_rows, expected_sorted_rows)
