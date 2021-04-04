@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 from .exceptions import InvalidParams
 from .services import ExtractionService, LoadingService
 
@@ -28,13 +30,14 @@ class ExtractionHandler:
 class TransformationHandler:
     @classmethod
     def transform(cls, rows: list[list[str]]) \
-            -> dict[int, dict[str, int]]:
+            -> list[list[str]]:
         """
         placeholder
         """
         parsed_rows: list[cls.Row] = [cls.Row.create(row) for row in rows]
         sorted_rows, sorted_paths = cls.sort_rows_by_user_id(parsed_rows)
-        return cls.fill_missing_paths(sorted_rows, sorted_paths)
+        filled_rows = cls.fill_missing_paths(sorted_rows, sorted_paths)
+        return cls.flatten_rows(filled_rows, sorted_paths)
 
     class Row:
         user_id: int
@@ -146,14 +149,15 @@ class TransformationHandler:
         returns  list[list[str]]: the data transformed as a list of list of
                                   strings, starting with the list of headers
         """
-        headers: list[str] = sorted_paths
+        headers: list[str] = deepcopy(sorted_paths)
         headers.insert(0, 'user_id')
         flattened_rows: list[list[str]] = [headers]
 
-        for user_id, paths in sorted_rows.items():
+        for user_id, _ in sorted_rows.items():
             flattened_row = [str(user_id)]
-            for _, length in paths.items():
-                flattened_row.append(str(length))
+            for sorted_path in sorted_paths:
+                length: str = str(sorted_rows[user_id][sorted_path])
+                flattened_row.append(length)
             flattened_rows.append(flattened_row)
 
         return flattened_rows

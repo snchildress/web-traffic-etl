@@ -111,23 +111,12 @@ class TestTransformationHandler(unittest.TestCase):
         Tests that CSV rows are transformed into a dictionary of
         user IDs and their web traffic activity
         """
-        expected_sorted_rows = {
-            1: {
-                '/': 10,
-                '/help': 0,
-                '/test': 5
-            },
-            2: {
-                '/': 1,
-                '/help': 0,
-                '/test': 0
-            },
-            3: {
-                '/': 0,
-                '/help': 12,
-                '/test': 0
-            }
-        }
+        expected_flattened_rows = [
+            ['user_id', '/', '/help', '/test'],
+            ['1', '10', '0', '5'],
+            ['2', '1', '0', '0'],
+            ['3', '0', '12', '0']
+        ]
 
         test_rows = [
             ['1', '2', '/', '', '1'],
@@ -139,9 +128,9 @@ class TestTransformationHandler(unittest.TestCase):
             ['1', '8', '/help', '', '3'],
             ['0', '3', '/', '', '1'],
         ]
-        actual_sorted_rows = TransformationHandler.transform(test_rows)
+        actual_flattened_rows = TransformationHandler.transform(test_rows)
 
-        self.assertEqual(actual_sorted_rows, expected_sorted_rows)
+        self.assertEqual(actual_flattened_rows, expected_flattened_rows)
 
     def test_fill_missing_paths(self):
         """
