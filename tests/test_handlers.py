@@ -108,13 +108,18 @@ class TestTransformationHandler(unittest.TestCase):
         expected_sorted_rows = {
             1: {
                 '/': 10,
+                '/help': 0,
                 '/test': 5
             },
             2: {
-                '/': 1
+                '/': 1,
+                '/help': 0,
+                '/test': 0
             },
             3: {
-                '/help': 12
+                '/': 0,
+                '/help': 12,
+                '/test': 0
             }
         }
 
@@ -129,5 +134,49 @@ class TestTransformationHandler(unittest.TestCase):
             ['0', '3', '/', '', '1'],
         ]
         actual_sorted_rows = TransformationHandler.transform(test_rows)
+
+        self.assertEqual(actual_sorted_rows, expected_sorted_rows)
+
+    def test_fill_missing_paths(self):
+        """
+        Tests that the provided sorted rows are filled in with
+        the paths that each user is missing
+        """
+        expected_sorted_rows = {
+            1: {
+                '/': 10,
+                '/help': 0,
+                '/test': 5
+            },
+            2: {
+                '/': 1,
+                '/help': 0,
+                '/test': 0
+            },
+            3: {
+                '/': 0,
+                '/help': 12,
+                '/test': 0
+            }
+        }
+
+        test_rows = {
+            1: {
+                '/': 10,
+                '/test': 5
+            },
+            2: {
+                '/': 1
+            },
+            3: {
+                '/help': 12
+            }
+        }
+        test_paths = ['/', '/test', '/help']
+
+        actual_sorted_rows = TransformationHandler.fill_missing_paths(
+            test_rows,
+            test_paths
+        )
 
         self.assertEqual(actual_sorted_rows, expected_sorted_rows)
