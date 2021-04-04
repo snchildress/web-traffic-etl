@@ -33,8 +33,8 @@ class TransformationHandler:
         placeholder
         """
         parsed_rows: list[cls.Row] = [cls.Row.create(row) for row in rows]
-        sorted_rows, _ = cls.sort_rows_by_user_id(parsed_rows)
-        return sorted_rows
+        sorted_rows, sorted_paths = cls.sort_rows_by_user_id(parsed_rows)
+        return cls.fill_missing_paths(sorted_rows, sorted_paths)
 
     class Row:
         user_id: int
@@ -103,3 +103,20 @@ class TransformationHandler:
         sorted_paths: list[str] = sorted(paths)
 
         return sorted_rows, sorted_paths
+
+    @classmethod
+    def fill_missing_paths(
+        cls,
+        sorted_rows: dict[int, dict[str, int]],
+        sorted_paths: list[str]
+    ) -> dict[int, dict[str, int]]:
+        """
+        returns the sorted_rows dict with an entry for each
+        user that is missing that path
+        """
+        for user_id, paths in sorted_rows.items():
+            for sorted_path in sorted_paths:
+                if sorted_path not in paths.keys():
+                    sorted_rows[user_id][sorted_path] = 0
+
+        return sorted_rows
