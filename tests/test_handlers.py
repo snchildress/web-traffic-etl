@@ -187,6 +187,44 @@ class TestTransformationHandler(unittest.TestCase):
 
         self.assertEqual(actual_sorted_rows, expected_sorted_rows)
 
+    def test_flatten_rows(self):
+        """
+        Tests that a dictionary of rows can be transformed
+        into a flattened list of lists
+        """
+        expected_flattened_rows = [
+            ['user_id', '/', '/help', '/test'],
+            ['1', '10', '0', '5'],
+            ['2', '1', '0', '0'],
+            ['3', '0', '12', '0']
+        ]
+
+        test_rows = {
+            1: {
+                '/': 10,
+                '/help': 0,
+                '/test': 5
+            },
+            2: {
+                '/': 1,
+                '/help': 0,
+                '/test': 0
+            },
+            3: {
+                '/': 0,
+                '/help': 12,
+                '/test': 0
+            }
+        }
+        test_paths = ['/', '/help', '/test']
+
+        actual_flattened_rows = TransformationHandler.flatten_rows(
+            test_rows,
+            test_paths
+        )
+
+        self.assertEqual(actual_flattened_rows, expected_flattened_rows)
+
 
 class TestLoadingHandler(unittest.TestCase):
     def test_load(self):

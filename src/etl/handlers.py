@@ -113,13 +113,50 @@ class TransformationHandler:
         """
         returns the sorted_rows dict with an entry for each
         user that is missing that path
+
+        sorted_rows  dict[int, dict[str, int]]: the data rows to have
+                                                data filled in
+        sorted_paths  list[str]: the list of all unique paths which will
+                                 be used to fill in the data rows
+
+        returns  dict[int, dict[str, int]]: the data rows with all paths
+                                            filled in for all users
         """
         for user_id, paths in sorted_rows.items():
             for sorted_path in sorted_paths:
                 if sorted_path not in paths.keys():
                     sorted_rows[user_id][sorted_path] = 0
-
         return sorted_rows
+
+    @classmethod
+    def flatten_rows(
+        cls,
+        sorted_rows: dict[int, dict[str, int]],
+        sorted_paths: list[str]
+    ) -> list[list[str]]:
+        """
+        returns the data in the shape of a list of list of strings,
+        with the list of headers as the first item
+
+        sorted_rows  dict[int, dict[str, int]]: the dictionary of data
+                                                to be transformed into a list
+        sorted_paths  list[str]: the page paths which will be used as the
+                                 first item (headers)
+
+        returns  list[list[str]]: the data transformed as a list of list of
+                                  strings, starting with the list of headers
+        """
+        headers: list[str] = sorted_paths
+        headers.insert(0, 'user_id')
+        flattened_rows: list[list[str]] = [headers]
+
+        for user_id, paths in sorted_rows.items():
+            flattened_row = [str(user_id)]
+            for _, length in paths.items():
+                flattened_row.append(str(length))
+            flattened_rows.append(flattened_row)
+
+        return flattened_rows
 
 
 class LoadingHandler:
