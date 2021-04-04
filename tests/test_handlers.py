@@ -220,16 +220,15 @@ class TestLoadingHandler(unittest.TestCase):
         """
         Tests that a CSV is successfully written
         """
-        test_name = 'test'
         test_rows = [
             ['a', 'b', 'c'],
             ['1', '2', '3'],
             ['4', '5', '6']
         ]
 
-        LoadingHandler.load(test_name, test_rows)
+        LoadingHandler.load(test_rows)
 
-        file_path = f'/usr/src/app/output/{test_name}.csv'
+        file_path = '/usr/src/app/output/output.csv'
         with open(file_path, 'r') as file:
             actual_rows = list(csv.reader(file))
             self.assertEqual(actual_rows, test_rows)

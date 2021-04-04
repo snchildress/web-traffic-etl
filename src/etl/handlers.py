@@ -165,14 +165,14 @@ class TransformationHandler:
 
 class LoadingHandler:
     @classmethod
-    def load(cls, name: str, rows: list[list[str]]):
+    def load(cls, rows: list[list[str]]):
         """
         writes the provided CSV rows to the given CSV file name
-        at /output/{name}.csv
+        at /output/output.csv
 
         name  str: the name of the CSV to write to without
                    the file extension
         rows  list[list[str]]: the rows to write, where the
                                the first item is the headers
         """
-        LoadingService.load(name, rows)
+        LoadingService.load('output', rows)
