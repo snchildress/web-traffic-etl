@@ -32,7 +32,7 @@ class TransformationHandler:
         """
         placeholder
         """
-        parsed_rows = [self.parse_row(row) for row in rows]
+        parsed_rows = [self.Row.create(row) for row in rows]
         return self.sort_rows_by_user_id(parsed_rows)
 
     class Row:
@@ -45,25 +45,25 @@ class TransformationHandler:
             self.path = path
             self.length = length
 
-    @ classmethod
-    def parse_row(self, row: list[str]) -> Row:
-        """
-        returns an instance of the Row class
-        for a given CSV row
+        @ classmethod
+        def create(self, row: list[str]):
+            """
+            returns an instance of the Row class
+            for a given CSV row
 
-        row  list[str]: a CSV row, where user ID and
-                        length can be parsed as integers
+            row  list[str]: a CSV row, where user ID and
+                            length can be parsed as integers
 
-        returns:
-            Row()
-        """
-        try:
-            user_id = int(row[4])
-            path = row[2]
-            length = int(row[1])
-        except (TypeError, ValueError, IndexError, KeyError):
-            raise InvalidParams()
-        return self.Row(user_id=user_id, path=path, length=length)
+            returns:
+                Row()
+            """
+            try:
+                user_id = int(row[4])
+                path = row[2]
+                length = int(row[1])
+            except (TypeError, ValueError, IndexError, KeyError):
+                raise InvalidParams()
+            return self(user_id=user_id, path=path, length=length)
 
     @ classmethod
     def sort_rows_by_user_id(self, rows: Row) -> \

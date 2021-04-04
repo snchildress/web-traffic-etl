@@ -35,7 +35,7 @@ class TestExtractionHandler(unittest.TestCase):
 
 
 class TestTransformationHandler(unittest.TestCase):
-    def test_parse_row(self):
+    def test_create_row(self):
         """
         Tests that a CSV row is successfully parsed into a Row instance
         """
@@ -44,7 +44,7 @@ class TestTransformationHandler(unittest.TestCase):
             path='/',
             length=7
         )
-        actual_row = TransformationHandler.parse_row([
+        actual_row = TransformationHandler.Row.create([
             '1',
             '7',
             '/',
@@ -56,14 +56,14 @@ class TestTransformationHandler(unittest.TestCase):
         self.assertEqual(actual_row.path, expected_row.path)
         self.assertEqual(actual_row.length, expected_row.length)
 
-    def test_parse_invalid_params(self):
+    def test_create_row_with_invalid_params(self):
         """
-        Tests that an invalid CSV row is handled correctly
+        Tests that an invalid CSV row is handled correctly during creation
         """
         for invalid_row in [['1'], 1, '', None, ['a', 'a', 'a', 'a', 'a'],
                             ['', '', '', '', ''], {'a': 'a'}]:
             with self.assertRaises(InvalidParams):
-                TransformationHandler.parse_row(invalid_row)
+                TransformationHandler.Row.create(invalid_row)
 
     def test_sort_rows_by_user_id(self):
         """
