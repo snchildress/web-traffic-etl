@@ -65,3 +65,20 @@ class ExtractionService:
             raise BadResponse()
 
         return list(filter(None, csv.reader(lines)))
+
+
+class LoadingService:
+    @classmethod
+    def load(cls, name: str, rows: list[list[str]]):
+        """
+        writes the provided CSV rows to the given CSV file name
+        at /output/{name}.csv
+
+        name  str: the name of the CSV to write to without
+                   the file extension
+        rows  list[list[str]]: the rows to write, where the
+                               the first item is the headers
+        """
+        with open(f'/usr/src/app/output/{name}.csv', 'w') as file:
+            writer = csv.writer(file)
+            writer.writerows(rows)

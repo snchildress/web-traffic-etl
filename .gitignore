@@ -4,3 +4,6 @@ __pycache__
 
 # dependencies
 venv/
+
+# output data
+/output

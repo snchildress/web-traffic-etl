@@ -1,8 +1,14 @@
+import csv
+import os
 import unittest
 from unittest.mock import patch, call
 
 from src.etl.exceptions import InvalidParams
-from src.etl.handlers import ExtractionHandler, TransformationHandler
+from src.etl.handlers import (
+    ExtractionHandler,
+    TransformationHandler,
+    LoadingHandler
+)
 
 
 class TestExtractionHandler(unittest.TestCase):
@@ -180,3 +186,24 @@ class TestTransformationHandler(unittest.TestCase):
         )
 
         self.assertEqual(actual_sorted_rows, expected_sorted_rows)
+
+
+class TestLoadingHandler(unittest.TestCase):
+    def test_load(self):
+        """
+        Tests that a CSV is successfully written
+        """
+        test_name = 'test'
+        test_rows = [
+            ['a', 'b', 'c'],
+            ['1', '2', '3'],
+            ['4', '5', '6']
+        ]
+
+        LoadingHandler.load(test_name, test_rows)
+
+        file_path = f'/usr/src/app/output/{test_name}.csv'
+        with open(file_path, 'r') as file:
+            actual_rows = list(csv.reader(file))
+            self.assertEqual(actual_rows, test_rows)
+            os.remove(file_path)

@@ -1,5 +1,5 @@
 from .exceptions import InvalidParams
-from .services import ExtractionService
+from .services import ExtractionService, LoadingService
 
 
 class ExtractionHandler:
@@ -120,3 +120,18 @@ class TransformationHandler:
                     sorted_rows[user_id][sorted_path] = 0
 
         return sorted_rows
+
+
+class LoadingHandler:
+    @classmethod
+    def load(cls, name: str, rows: list[list[str]]):
+        """
+        writes the provided CSV rows to the given CSV file name
+        at /output/{name}.csv
+
+        name  str: the name of the CSV to write to without
+                   the file extension
+        rows  list[list[str]]: the rows to write, where the
+                               the first item is the headers
+        """
+        LoadingService.load(name, rows)

@@ -5,7 +5,8 @@ all: build
 
 .PHONY: build
 build:
-	docker build --tag ${IMAGE_TAG} . \
+	mkdir -p output \
+		&& docker build --tag ${IMAGE_TAG} . \
 		&& make clean
 
 .PHONY: clean
@@ -16,9 +17,13 @@ clean:
 .PHONY: run
 run:
 	make build \
-		&& docker run ${IMAGE_TAG}
+		&& docker run \
+			-v $$(pwd)/output:/usr/src/app/output \
+			-it ${IMAGE_TAG}
 
 .PHONY: test
 test:
 	make build \
-		&& docker run ${IMAGE_TAG} sh -c "python -m unittest"
+		&& docker run \
+			-it ${IMAGE_TAG} \
+			sh -c "python -m unittest" 

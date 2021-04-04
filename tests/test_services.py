@@ -1,3 +1,5 @@
+import csv
+import os
 import unittest
 from unittest.mock import patch
 
@@ -7,7 +9,7 @@ from src.etl.exceptions import (
     BadRequest,
     BadResponse
 )
-from src.etl.services import ExtractionService
+from src.etl.services import ExtractionService, LoadingService
 
 
 class TestExtractionService(unittest.TestCase):
@@ -129,3 +131,24 @@ class TestExtractionService(unittest.TestCase):
                 ExtractionService.fetch_csv_rows(test_file_name)
 
             requests_get_mock.assert_called_with(expected_request_url)
+
+
+class TestLoadingService(unittest.TestCase):
+    def test_load(self):
+        """
+        Tests that a CSV is successfully written
+        """
+        test_name = 'test'
+        test_rows = [
+            ['a', 'b', 'c'],
+            ['1', '2', '3'],
+            ['4', '5', '6']
+        ]
+
+        LoadingService.load(test_name, test_rows)
+
+        file_path = f'/usr/src/app/output/{test_name}.csv'
+        with open(file_path, 'r') as file:
+            actual_rows = list(csv.reader(file))
+            self.assertEqual(actual_rows, test_rows)
+            os.remove(file_path)
