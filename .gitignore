@@ -2,8 +2,5 @@
 .DS_Store
 __pycache__
 
-# dependencies
-venv/
-
 # output data
 /output

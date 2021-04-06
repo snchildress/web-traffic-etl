@@ -7,4 +7,5 @@ COPY /output /usr/src/app/output
 COPY . /usr/src/app
 
 ENV WEB_TRAFFIC_DATA_ROOT_URL="https://public.wiwdata.com/engineering-challenge/data"
+ENV OUTPUT_FILE_PATH="/usr/src/app/output"
 CMD [ "python", "src/main.py" ]

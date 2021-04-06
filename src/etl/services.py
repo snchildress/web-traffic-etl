@@ -5,7 +5,7 @@ from typing import Iterator
 import requests
 
 from .exceptions import InvalidParams, InvalidFilename, BadRequest, BadResponse
-from .config import WEB_TRAFFIC_DATA_ROOT_URL
+from .config import WEB_TRAFFIC_DATA_ROOT_URL, OUTPUT_FILE_PATH
 
 
 class ExtractionService:
@@ -68,6 +68,8 @@ class ExtractionService:
 
 
 class LoadingService:
+    output_file_path: str = OUTPUT_FILE_PATH
+
     @classmethod
     def load(cls, name: str, rows: list[list[str]]):
         """
@@ -79,6 +81,6 @@ class LoadingService:
         rows  list[list[str]]: the rows to write, where the
                                the first item is the headers
         """
-        with open(f'/usr/src/app/output/{name}.csv', 'w') as file:
+        with open(f'{cls.output_file_path}/{name}.csv', 'w') as file:
             writer = csv.writer(file)
             writer.writerows(rows)

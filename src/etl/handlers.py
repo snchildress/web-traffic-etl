@@ -32,7 +32,14 @@ class TransformationHandler:
     def transform(cls, rows: list[list[str]]) \
             -> list[list[str]]:
         """
-        placeholder
+        returns pivoted user page view length data by user ID
+        and page path from raw page view logs
+
+        rows  list[list[str]]: a row of a single page view, with user
+                               ID, page path, and page length
+
+        returns  list[list[str]]: pivoted rows of page length data by
+                                  user ID and page path
         """
         parsed_rows: list[cls.Row] = [cls.Row.create(row) for row in rows]
         sorted_rows, sorted_paths = cls.sort_rows_by_user_id(parsed_rows)
@@ -75,13 +82,14 @@ class TransformationHandler:
         """
         sorts the given list of Row instances into a dict
         of user IDs to a dict of the pages and cumulative
-        length of time spent (in seconds) per page
+        length of time spent (in seconds) per page along
+        with a unique list of all paths in the given rows
 
         rows  list[Row]: the list of rows to be sorted
 
         returns:
-            {int: {str: int}} a of user IDs to paths/durations
-
+            {int: {str: int}}: a of user IDs to paths/durations
+            list[str]: unique list of paths in given rows
         """
         sorted_rows: dict[int, dict[str, int]] = {}
         paths: set[str] = set()
