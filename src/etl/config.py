@@ -1,0 +1,5 @@
+import os
+
+
+WEB_TRAFFIC_DATA_ROOT_URL = os.environ['WEB_TRAFFIC_DATA_ROOT_URL']
+OUTPUT_FILE_PATH = os.environ['OUTPUT_FILE_PATH']
