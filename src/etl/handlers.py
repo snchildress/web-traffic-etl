@@ -38,8 +38,9 @@ class TransformationHandler:
         rows  list[list[str]]: a row of a single page view, with user
                                ID, page path, and page length
 
-        returns  list[list[str]]: pivoted rows of page length data by
-                                  user ID and page path
+        returns:
+            list[list[str]]: pivoted rows of page length data by
+                             user ID and page path
         """
         parsed_rows: list[cls.Row] = [cls.Row.create(row) for row in rows]
         sorted_rows, sorted_paths = cls.sort_rows_by_user_id(parsed_rows)
@@ -130,8 +131,9 @@ class TransformationHandler:
         sorted_paths  list[str]: the list of all unique paths which will
                                  be used to fill in the data rows
 
-        returns  dict[int, dict[str, int]]: the data rows with all paths
-                                            filled in for all users
+        returns:
+            dict[int, dict[str, int]]: the data rows with all paths
+                                       filled in for all users
         """
         for user_id, paths in sorted_rows.items():
             for sorted_path in sorted_paths:
@@ -154,8 +156,9 @@ class TransformationHandler:
         sorted_paths  list[str]: the page paths which will be used as the
                                  first item (headers)
 
-        returns  list[list[str]]: the data transformed as a list of list of
-                                  strings, starting with the list of headers
+        returns:
+            list[list[str]]: the data transformed as a list of list of
+                             strings, starting with the list of headers
         """
         headers: list[str] = deepcopy(sorted_paths)
         headers.insert(0, 'user_id')
